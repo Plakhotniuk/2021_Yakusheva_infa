@@ -4,7 +4,7 @@ import math
 pygame.init()
 
 FPS = 30
-screen = pygame.display.set_mode((600, 400))
+screen = pygame.display.set_mode((600, 300))
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
