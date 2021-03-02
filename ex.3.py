@@ -10,7 +10,7 @@ pygame.init()
 
 FPS = 30
 screensize = (800, 400)
-screen = pygame.display.set_mode(screensize)
+screen = pygame.display.set_mode(screensize, pygame.SRCALPHA)
 clock = pygame.time.Clock()
 finished = False
 
@@ -31,11 +31,11 @@ NIGHT_GRAY = (104, 98, 115)
 ck = (127, 33, 33)
 BRIGHT_YELLOW = (255, 244, 47)
 
-DARKNESS = pygame.Surface(screensize)
+DARKNESS = pygame.Surface(screensize, pygame.SRCALPHA)
 DARKNESS.set_alpha(200)
 DARKNESS.fill((0, 0, 0))
 
-SEE_THROUGH = pygame.Surface((800, 180))
+SEE_THROUGH = pygame.Surface((800, 180), pygame.SRCALPHA)
 SEE_THROUGH.set_alpha(150)
 SEE_THROUGH.fill((124, 118, 135))
 
@@ -49,9 +49,14 @@ def sun(location, size):
     """
         Рисует солнце с заданными координатами и размерами
     """
-    R1 = 40 * size
-    R2 = 38 * size
+    r1 = 40 * size
+    r2 = 38 * size
     x2 = 0
+    y2 = 0
+    y3 = 0
+    y4 = 0
+    x3 = 0
+    x4 = 0
     z = 0
     z1 = 0
     n = 30
@@ -59,23 +64,23 @@ def sun(location, size):
     pygame.draw.circle(screen, YELLOW, (location[0], location[1]), 39 * size)
     for i in range(n):
         if i == 0:
-            x2 = location[0] + R1 * math.cos(0)
-            y2 = location[1] + R1 * math.sin(0)
-            x3 = location[0] + R1 * math.cos(a)
-            y3 = location[1] + R1 * math.sin(a)
-            x4 = location[0] + R2 * math.cos(a / 2)
-            y4 = location[1] + R2 * math.sin(a / 2)
+            x2 = location[0] + r1 * math.cos(0)
+            y2 = location[1] + r1 * math.sin(0)
+            x3 = location[0] + r1 * math.cos(a)
+            y3 = location[1] + r1 * math.sin(a)
+            x4 = location[0] + r2 * math.cos(a / 2)
+            y4 = location[1] + r2 * math.sin(a / 2)
             z1 = a / 2
 
         if i > 0:
             z = z + a
             z1 = z1 + a
-            x2 = location[0] + R1 * math.cos(z)
-            y2 = location[1] + R1 * math.sin(z)
-            x3 = location[0] + R1 * math.cos(z - a)
-            y3 = location[1] + R1 * math.sin(z - a)
-            x4 = location[0] + R2 * math.cos(z1)
-            y4 = location[1] + R2 * math.sin(z1)
+            x2 = location[0] + r1 * math.cos(z)
+            y2 = location[1] + r1 * math.sin(z)
+            x3 = location[0] + r1 * math.cos(z - a)
+            y3 = location[1] + r1 * math.sin(z - a)
+            x4 = location[0] + r2 * math.cos(z1)
+            y4 = location[1] + r2 * math.sin(z1)
         pygame.draw.aalines(screen, WHITE, False, [[x2, y2], [x4, y4], [x3, y3]])
 
 
@@ -88,24 +93,31 @@ def house(location, size, window_color):
     pygame.draw.polygon(screen, Firebrick4, [[location[0] - 120 * size, location[1] - 70 * size],
                                              [location[0] - 30 * size, location[1] - 70 * size],
                                              [location[0] - 75 * size, location[1] - 100 * size]])
+    # radius = 15 * size
+    # if not day:
+    #     for i in range(int(radius)):
+    #         light_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+    #
+    #     pygame.draw.circle(light_surface, BRIGHT_YELLOW, location, i)
+    #     screen.blit(light_surface, (0, 0))
 
 
 def tree(location, size):
     """
         Рисует дерево с заданными координатами и размером
     """
-    R = 28 * size
+    r = 28 * size
     phi = 3 / 5 * math.pi
     pygame.draw.rect(screen, BLACK, (location[0] - 18 * size, location[1] + 10 * size, 10 * size, 80 * size))
-    pygame.draw.circle(screen, Green4, (location[0] - R / 2, location[1] + 10 * size), 2 * R / 3)
-    pygame.draw.circle(screen, BLACK, (location[0] - R / 2, location[1] + 10 * size), 2 * R / 3, 1)
+    pygame.draw.circle(screen, Green4, (location[0] - r / 2, location[1] + 10 * size), 2 * r / 3)
+    pygame.draw.circle(screen, BLACK, (location[0] - r / 2, location[1] + 10 * size), 2 * r / 3, 1)
     location[0] = location[0] + 10 * size
     location[1] = location[1] + 3 * size
     for i in range(5):
-        pygame.draw.circle(screen, Green4, (location[0], location[1]), 2 * R / 3)
-        pygame.draw.circle(screen, BLACK, (location[0], location[1]), 2 * R / 3, 1)
-        location[0] = location[0] + R * math.cos(phi)
-        location[1] = location[1] + R * math.sin(phi)
+        pygame.draw.circle(screen, Green4, (location[0], location[1]), 2 * r / 3)
+        pygame.draw.circle(screen, BLACK, (location[0], location[1]), 2 * r / 3, 1)
+        location[0] = location[0] + r * math.cos(phi)
+        location[1] = location[1] + r * math.sin(phi)
         phi = phi + 2 / 5 * math.pi
 
 
@@ -113,18 +125,18 @@ def draw_clouds(x, y, size):
     """
         Рисует облако с заданными координатами и размером
     """
-    R = 28 * size
-    pygame.draw.circle(screen, WHITE, (x, y), 2 * R / 3)
-    pygame.draw.circle(screen, BLACK, (x, y), 2 * R / 3, 1)
+    r = 28 * size
+    pygame.draw.circle(screen, WHITE, (x, y), 2 * r / 3)
+    pygame.draw.circle(screen, BLACK, (x, y), 2 * r / 3, 1)
     for j in range(6):
         if j == 1 or j == 3 or j == 5:
-            x = x + 2 * R / 3
+            x = x + 2 * r / 3
         if j == 2:
-            y = y - 2 * R / 3
+            y = y - 2 * r / 3
         if j == 4:
-            y = y + 2 * R / 3
-        pygame.draw.circle(screen, WHITE, (x, y), 2 * R / 3)
-        pygame.draw.circle(screen, BLACK, (x, y), 2 * R / 3, 1)
+            y = y + 2 * r / 3
+        pygame.draw.circle(screen, WHITE, (x, y), 2 * r / 3)
+        pygame.draw.circle(screen, BLACK, (x, y), 2 * r / 3, 1)
 
 
 day = True
