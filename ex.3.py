@@ -93,13 +93,6 @@ def house(location, size, window_color):
     pygame.draw.polygon(screen, Firebrick4, [[location[0] - 120 * size, location[1] - 70 * size],
                                              [location[0] - 30 * size, location[1] - 70 * size],
                                              [location[0] - 75 * size, location[1] - 100 * size]])
-    # radius = 15 * size
-    # if not day:
-    #     for i in range(int(radius)):
-    #         light_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
-    #
-    #     pygame.draw.circle(light_surface, BRIGHT_YELLOW, location, i)
-    #     screen.blit(light_surface, (0, 0))
 
 
 def tree(location, size):
